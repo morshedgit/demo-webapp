@@ -3,9 +3,8 @@ pipeline {
 
     environment {
         TOMCAT_SERVER = "${env.TOMCAT_SERVER}"
-        TOMCAT_PATH = "${env.TOMCAT_PATH}"
-        TOMCAT_USER = credentials('tomcat_deploy').username
-        TOMCAT_PASS = credentials('tomcat_deploy').password
+        TOMCAT_PATH = "${env.TOMCAT_PATH}"        
+        TOMCAT_CREDENTIALS = credentials('tomcat_deploy')
     }
 
     stages {
@@ -25,7 +24,7 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 sh """
-                    curl --upload-file target/demo-app.war "http://${TOMCAT_USER}:${TOMCAT_PASS}@${TOMCAT_SERVER}:8888/manager/text/deploy?path=${TOMCAT_PATH}&update=true"
+                    curl --upload-file target/demo-app.war "http://${TOMCAT_CREDENTIALS_USR}:${TOMCAT_CREDENTIALS_PSW}@${TOMCAT_SERVER}:8888/manager/text/deploy?path=${TOMCAT_PATH}&update=true"
                 """
             }
         }
