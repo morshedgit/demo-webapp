@@ -27,7 +27,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'tomcat_deploy', passwordVariable: 'TOMCAT_PASS', usernameVariable: 'TOMCAT_USER')]) {
                     sh '''
-                        scp -o StrictHostKeyChecking=no target/demo-app.war $TOMCAT_USER@${TOMCAT_SERVER}:${TOMCAT_PATH}/demo-app.war
+                        sshpass -p $TOMCAT_PASS scp -o StrictHostKeyChecking=no target/demo-app.war $TOMCAT_USER@${TOMCAT_SERVER}:${TOMCAT_PATH}/demo-app.war
                     '''
                 }
             }
