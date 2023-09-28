@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         TOMCAT_SERVER = "${env.TOMCAT_SERVER}"
-        TOMCAT_PATH = "${env.TOMCAT_PATH}"        
+        TOMCAT_PATH = "/usr/local/tomcat/webapps" // This is the default path for Tomcat webapps in the Docker container
         TOMCAT_CREDENTIALS = credentials('tomcat_deploy')
     }
 
@@ -25,8 +25,9 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
+                // Use scp to copy the war file to the Tomcat webapps directory
                 sh """
-                    curl --upload-file target/demo-app.war "http://${TOMCAT_CREDENTIALS_USR}:${TOMCAT_CREDENTIALS_PSW}@${TOMCAT_SERVER}:8888/manager/text/deploy?path=${TOMCAT_PATH}&update=true"
+                    scp -o StrictHostKeyChecking=no target/demo-app.war ${TOMCAT_CREDENTIALS_USR}:${TOMCAT_CREDENTIALS_PSW}@${TOMCAT_SERVER}:${TOMCAT_PATH}/demo-app.war
                 """
             }
         }
