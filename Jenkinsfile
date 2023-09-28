@@ -25,10 +25,11 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
-                // Use scp to copy the war file to the Tomcat webapps directory
-                sh """
-                    scp -o StrictHostKeyChecking=no target/demo-app.war ${TOMCAT_CREDENTIALS_USR}:${TOMCAT_CREDENTIALS_PSW}@${TOMCAT_SERVER}:${TOMCAT_PATH}/demo-app.war
-                """
+                withCredentials([usernamePassword(credentialsId: 'tomcat_deploy', passwordVariable: 'TOMCAT_PASS', usernameVariable: 'TOMCAT_USER')]) {
+                    sh '''
+                        scp -o StrictHostKeyChecking=no target/demo-app.war $TOMCAT_USER@${TOMCAT_SERVER}:${TOMCAT_PATH}/demo-app.war
+                    '''
+                }
             }
         }
     }
